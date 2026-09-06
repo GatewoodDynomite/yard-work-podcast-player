@@ -9,8 +9,324 @@
   <meta name="apple-mobile-web-app-title" content="Yard Queue" />
   <title>Yard Queue</title>
   <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #0b120c;
+      --bg-2: #142016;
+      --card: #1a2a1c;
+      --card-2: #223426;
+      --ink: #f3f6ee;
+      --muted: #b7c4b0;
+      --line: #314636;
+      --amber: #f0b429;
+      --amber-2: #ffd56a;
+      --good: #8fd19e;
+      --danger: #ff8a70;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100%;
+    }
+    body {
+      padding: calc(12px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
+      max-width: 720px; margin: 0 auto;
+    }
+    h1 { font-size: 1.15rem; margin: 0; letter-spacing: .02em; }
+    .sub { color: var(--muted); font-size: .92rem; margin-top: 4px; line-height: 1.35; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .badge {
+      background: var(--card); border: 1px solid var(--line); color: var(--amber-2);
+      border-radius: 999px; padding: 8px 12px; font-size: .78rem; white-space: nowrap;
+    }
+    .now {
+      background: linear-gradient(180deg, var(--card-2), var(--card));
+      border: 1px solid var(--line); border-radius: 22px; padding: 18px 16px 16px;
+      box-shadow: var(--shadow); margin-bottom: 14px;
+    }
+    .kicker { color: var(--amber); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .title { font-size: 1.35rem; line-height: 1.25; margin: 8px 0 14px; font-weight: 750; }
+    .times { display: flex; justify-content: space-between; color: var(--muted); font-variant-numeric: tabular-nums; font-size: .9rem; margin-top: 6px; }
+    input[type="range"] { width: 100%; height: 28px; accent-color: var(--amber); margin: 0; }
+    .controls { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 10px; margin: 14px 0 10px; }
+    button {
+      border: 0; border-radius: 18px; background: var(--card-2); color: var(--ink);
+      font-weight: 700; font-size: 1rem; min-height: 64px; cursor: pointer;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    button:active { transform: scale(.98); }
+    button.play {
+      background: var(--amber); color: #1a1403; font-size: 1.35rem; min-height: 84px;
+      box-shadow: 0 8px 24px rgba(240,180,41,.28);
+    }
+    button.play.paused { background: var(--good); }
+    .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .row button { min-height: 52px; font-size: .92rem; }
+    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .tools button, .load-btn { min-height: 56px; }
+    .load-btn { width: 100%; background: #314d34; margin: 0 0 12px; }
+    .warn, .ok, .hint { border-radius: 14px; padding: 10px 12px; margin: 0 0 12px; line-height: 1.4; font-size: .92rem; }
+    .warn { background: #3a2418; color: #ffd7c4; }
+    .ok { background: #1c3324; color: var(--good); }
+    .hint { background: var(--bg-2); color: var(--muted); }
+    .list { display: flex; flex-direction: column; gap: 8px; }
+    .ep {
+      text-align: left; padding: 14px 14px; border-radius: 16px; background: var(--card);
+      display: grid; grid-template-columns: 54px 1fr auto; gap: 10px; align-items: center;
+      min-height: 72px;
+    }
+    .ep.on { outline: 2px solid var(--amber); background: #2a3f28; }
+    .ep.ready .num { background: #2f5a38; color: #e8ffe9; }
+    .num {
+      width: 54px; height: 54px; border-radius: 14px; background: #243328;
+      display: grid; place-items: center; font-weight: 800; color: var(--amber-2);
+    }
+    .ep b { display: block; font-size: 1rem; line-height: 1.25; }
+    .ep small { color: var(--muted); }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #5a6b58; }
+    .ep.ready .status-dot { background: var(--good); }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-<p>Placeholder - will update</p>
+  <header>
+    <div>
+      <h1>Yard Queue</h1>
+      <div class="sub">Support Process Audit · Sep 2026 · big buttons, dirty-hands friendly</div>
+    </div>
+    <div class="badge" id="sourceBadge">No audio loaded</div>
+  </header>
+  <div class="hint" id="howto">
+    Drive files are private, so the browser cannot stream them directly.
+    Best yard-work path: in the Drive app, download the folder
+    <b>Support Process Audit - Yard Work Listening Queue (Sep 2026)</b>,
+    then tap <b>Load audio from phone</b>. Add this page to your Home Screen after that.
+  </div>
+  <button class="load-btn" id="loadBtn">Load audio from phone</button>
+  <input id="fileInput" type="file" accept="audio/*,.mp3" multiple class="hidden" />
+  <div id="msg"></div>
+  <section class="now">
+    <div class="kicker" id="kicker">Ready when you are</div>
+    <div class="title" id="nowTitle">Pick a segment</div>
+    <input id="seek" type="range" min="0" max="1000" value="0" />
+    <div class="times"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+    <div class="controls">
+      <button id="prev" type="button">Prev</button>
+      <button class="play" id="play" type="button">Play</button>
+      <button id="next" type="button">Next</button>
+    </div>
+    <div class="row">
+      <button id="back15" type="button">-15s</button>
+      <button id="fwd15" type="button">+15s</button>
+      <button id="back30" type="button">-30s</button>
+      <button id="fwd30" type="button">+30s</button>
+    </div>
+    <div class="tools">
+      <button id="speedBtn" type="button">Speed 1.0x</button>
+      <button id="sleepBtn" type="button">Sleep off</button>
+      <button id="wakeBtn" type="button">Screen: normal</button>
+      <button id="driveBtn" type="button">Open in Drive</button>
+    </div>
+  </section>
+  <div class="list" id="list"></div>
+  <audio id="audio" playsinline></audio>
+  <script>
+    const EPISODES = [
+      { n: "00", title: "Full Yard Work Queue", mins: "34 min", file: "00-full-yard-work-queue.mp3", driveName: "00 - Full Yard Work Queue (34 min).mp3", id: "1uRvWAny_eq--MZ1p7E1iHxfbGd3b2lYg" },
+      { n: "01", title: "Support Process Audit Briefing", mins: "~8 min", file: "01-support-process-audit-briefing.mp3", driveName: "01 - Support Process Audit Briefing.mp3", id: "1z7CEvL_DXGDxgg5ibcLetM262cRmkN7G" },
+      { n: "02", title: "The Offer", mins: "~3 min", file: "02-the-offer.mp3", driveName: "02 - The Offer.mp3", id: "169nDNWfIijq43oQqTpM28cLRgGgRc8R5" },
+      { n: "03", title: "How to Compete", mins: "~3 min", file: "03-how-to-compete.mp3", driveName: "03 - How to Compete.mp3", id: "197l-PbKBAwIvVKtRBMJhoqsJu9JMfEA-" },
+      { n: "04", title: "First 30 Days", mins: "~3 min", file: "04-first-30-days.mp3", driveName: "04 - First 30 Days.mp3", id: "1PT0rxkcZMvslNekkXMlgDckdpb7hQpOq" },
+      { n: "05", title: "What the Report Contains", mins: "~3 min", file: "05-what-the-report-contains.mp3", driveName: "05 - What the Report Contains.mp3", id: "1Uuk_dsCrukrsCBJDDKcQSN_xgV4UyOJK" },
+      { n: "06", title: "Safety, Growth, and Stop Rules", mins: "~3 min", file: "06-safety-growth-and-stop-rules.mp3", driveName: "06 - Safety Growth and Stop Rules.mp3", id: "1BC6fCAzrPjZDad0679zdLDGlPJXjvjn6" },
+      { n: "07", title: "North Texas Yard, Clay, and Water", mins: "~3 min", file: "07-north-texas-yard-clay-and-water.mp3", driveName: "07 - North Texas Yard Clay and Water.mp3", id: "1dMNxhDB7ArorA07rfCjzJSNdVhrvgiZ_" },
+      { n: "08", title: "Proposal Language", mins: "~2 min", file: "08-proposal-language.mp3", driveName: "08 - Proposal Language.mp3", id: "1IepQRYqy6PqaRfg8uTd5XirqOncXBlcM" },
+      { n: "09", title: "Common Objections", mins: "~3 min", file: "09-common-objections.mp3", driveName: "09 - Common Objections.mp3", id: "1M8yi3s4WeE2r5wjrbRjkfOXas-cOk5vD" },
+      { n: "10", title: "Job Search vs Side Gig Boundary", mins: "~2 min", file: "10-job-search-vs-side-gig-boundary.mp3", driveName: "10 - Job Search vs Side Gig Boundary.mp3", id: "1PceEB1CDBuEQj6ZGq89zQMkgs1nOC-Rh" },
+      { n: "11", title: "Heat, Tools, and Finish One Zone", mins: "~2 min", file: "11-heat-tools-and-finish-one-zone.mp3", driveName: "11 - Heat Tools and Finish One Zone.mp3", id: "1R3b88iOwQa29HC2KRaM6tFTEjUpt48Xk" },
+      { n: "12", title: "What Is Burrowing Under the Grass", mins: "~3 min", file: "12-identify-what-is-burrowing-under-the-grass.mp3", driveName: "12 - Identify What Is Burrowing Under the Grass.mp3", id: "1hBxR9-n3KxyG4lJ8a-O6OpdIFpL2D2kV" },
+      { n: "13", title: "Technical Support Certifications", mins: "~3 min", file: "13-technical-support-certifications.mp3", driveName: "13 - Technical Support Certifications.mp3", id: "1JaAvdjnrtvrZc4hdL4t_uzYOdOjKQ3Qv" },
+      { n: "14", title: "Top Complaints from Support Managers", mins: "~4 min", file: "14-top-complaints-from-support-managers.mp3", driveName: "14 - Top Complaints from Support Managers.mp3", id: "1Ehsn9fxrtuAE8YKDTFd9ni5k2xFCNN96" },
+      { n: "15", title: "How Companies Implement CRM", mins: "~3 min", file: "15-how-companies-implement-crm.mp3", driveName: "15 - How Companies Implement CRM.mp3", id: "1jHG3Z5173qmena44cKMTlQwC0tFMcp_o" },
+      { n: "16", title: "How CSAT Is Gathered and Evaluated", mins: "~3 min", file: "16-how-csat-is-gathered-and-evaluated.mp3", driveName: "16 - How CSAT Is Gathered and Evaluated.mp3", id: "177QHrNbqvIdYUzxBfIyw5UWWygV-z_Sp" },
+      { n: "17", title: "Paid vs Free Technical Support Expectations", mins: "~3 min", file: "17-paid-vs-free-technical-support-expectations.mp3", driveName: "17 - Paid vs Free Technical Support Expectations.mp3", id: "1vCbtZ2Meezn4RS0Tt6XfxejX0LuyJPjP" }
+    ];
+    const audio = document.getElementById("audio");
+    const seek = document.getElementById("seek");
+    const playBtn = document.getElementById("play");
+    const speeds = [1, 1.2, 1.5, 0.9];
+    const sleeps = [0, 10, 20, 30, 45];
+    let speedIdx = 0, sleepIdx = 0, sleepUntil = 0, idx = 0, wakeLock = null;
+    const blobs = {};
+    const SAVE = "yard-queue-v1";
+    function norm(s) { return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, ""); }
+    function fmt(t) {
+      if (!isFinite(t) || t < 0) return "0:00";
+      const m = Math.floor(t / 60), s = Math.floor(t % 60);
+      return m + ":" + String(s).padStart(2, "0");
+    }
+    function state() { try { return JSON.parse(localStorage.getItem(SAVE) || "{}"); } catch { return {}; } }
+    function save(partial) { localStorage.setItem(SAVE, JSON.stringify(Object.assign(state(), partial))); }
+    function msg(html, kind) {
+      const el = document.getElementById("msg");
+      if (!html) { el.innerHTML = ""; return; }
+      el.innerHTML = '<div class="' + (kind || "ok") + '">' + html + "</div>";
+    }
+    function srcFor(ep) {
+      if (blobs[ep.n]) return blobs[ep.n];
+      if (ep.localOk) return "audio/" + ep.file;
+      return "";
+    }
+    function readyCount() { return EPISODES.filter(e => srcFor(e)).length; }
+    function setBadge() {
+      const n = readyCount();
+      document.getElementById("sourceBadge").textContent = n ? n + " ready to play" : "No audio loaded";
+    }
+    function renderList() {
+      document.getElementById("list").innerHTML = EPISODES.map((ep, i) => {
+        const on = i === idx ? " on" : "";
+        const ready = srcFor(ep) ? " ready" : "";
+        return '<button class="ep' + on + ready + '" data-i="' + i + '" type="button">' +
+          '<div class="num">' + ep.n + '</div>' +
+          '<div><b>' + ep.title + '</b><small>' + ep.mins + (srcFor(ep) ? " · ready" : " · needs file") + '</small></div>' +
+          '<div class="status-dot"></div></button>';
+      }).join("");
+    }
+    function mediaSession(ep) {
+      if (!("mediaSession" in navigator)) return;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: ep.title, artist: "Yard Queue", album: "Support Process Audit · Sep 2026"
+      });
+      const skip = d => { audio.currentTime = Math.max(0, audio.currentTime + d); };
+      navigator.mediaSession.setActionHandler("play", () => audio.play());
+      navigator.mediaSession.setActionHandler("pause", () => audio.pause());
+      navigator.mediaSession.setActionHandler("previoustrack", () => load(idx - 1, true));
+      navigator.mediaSession.setActionHandler("nexttrack", () => load(idx + 1, true));
+      navigator.mediaSession.setActionHandler("seekbackward", () => skip(-15));
+      navigator.mediaSession.setActionHandler("seekforward", () => skip(15));
+    }
+    function load(i, autoplay) {
+      idx = (i + EPISODES.length) % EPISODES.length;
+      const ep = EPISODES[idx];
+      const src = srcFor(ep);
+      document.getElementById("kicker").textContent = "Segment " + ep.n;
+      document.getElementById("nowTitle").textContent = ep.title;
+      renderList();
+      save({ idx });
+      if (!src) {
+        audio.removeAttribute("src");
+        playBtn.textContent = "Need file";
+        msg("This segment is not on the phone yet. Load audio from phone, or open it in Drive.", "warn");
+        return;
+      }
+      msg("");
+      const resume = (state().pos || {})[ep.n] || 0;
+      audio.src = src;
+      audio.playbackRate = speeds[speedIdx];
+      audio.onloadedmetadata = () => {
+        if (resume > 3 && resume < (audio.duration || 1e9) - 3) audio.currentTime = resume;
+        if (autoplay) audio.play().catch(() => {});
+      };
+      mediaSession(ep);
+    }
+    function matchFile(file) {
+      const a = norm(file.name);
+      return EPISODES.find(ep => a.includes(norm(ep.driveName)) || a.includes(norm(ep.file)) || a.startsWith(ep.n)) ||
+        EPISODES.find(ep => a.includes(norm(ep.title)));
+    }
+    function ingestFiles(files) {
+      let n = 0;
+      [...files].forEach(file => {
+        const ep = matchFile(file);
+        if (!ep) return;
+        if (blobs[ep.n]) URL.revokeObjectURL(blobs[ep.n]);
+        blobs[ep.n] = URL.createObjectURL(file);
+        n++;
+      });
+      setBadge(); renderList();
+      if (n) {
+        document.getElementById("howto").classList.add("hidden");
+        msg("Loaded " + n + " file" + (n === 1 ? "" : "s") + ". Play keeps working with the screen locked if you leave this tab open.");
+        if (!srcFor(EPISODES[idx])) {
+          const first = EPISODES.findIndex(e => srcFor(e));
+          if (first >= 0) load(first, false);
+        } else load(idx, false);
+      } else {
+        msg("No filenames matched the queue. Select the MP3s from the Yard Work Listening Queue folder.", "warn");
+      }
+    }
+    async function probeLocal() {
+      const checks = await Promise.all(EPISODES.map(ep =>
+        fetch("audio/" + ep.file, { method: "HEAD" }).then(r => r.ok).catch(() => false)
+      ));
+      checks.forEach((ok, i) => { EPISODES[i].localOk = ok; });
+      setBadge(); renderList();
+      if (readyCount()) {
+        document.getElementById("howto").classList.add("hidden");
+        msg("Playing bundled audio from this folder.");
+      }
+    }
+    document.getElementById("list").addEventListener("click", e => {
+      const btn = e.target.closest("[data-i]");
+      if (!btn) return;
+      load(+btn.dataset.i, true);
+    });
+    playBtn.onclick = () => {
+      if (!srcFor(EPISODES[idx])) return load(idx, false);
+      if (audio.paused) audio.play(); else audio.pause();
+    };
+    document.getElementById("prev").onclick = () => load(idx - 1, true);
+    document.getElementById("next").onclick = () => load(idx + 1, true);
+    document.getElementById("back15").onclick = () => audio.currentTime = Math.max(0, audio.currentTime - 15);
+    document.getElementById("fwd15").onclick = () => audio.currentTime += 15;
+    document.getElementById("back30").onclick = () => audio.currentTime = Math.max(0, audio.currentTime - 30);
+    document.getElementById("fwd30").onclick = () => audio.currentTime += 30;
+    document.getElementById("speedBtn").onclick = () => {
+      speedIdx = (speedIdx + 1) % speeds.length;
+      audio.playbackRate = speeds[speedIdx];
+      document.getElementById("speedBtn").textContent = "Speed " + speeds[speedIdx].toFixed(1) + "x";
+    };
+    document.getElementById("sleepBtn").onclick = () => {
+      sleepIdx = (sleepIdx + 1) % sleeps.length;
+      const m = sleeps[sleepIdx];
+      sleepUntil = m ? Date.now() + m * 60000 : 0;
+      document.getElementById("sleepBtn").textContent = m ? "Sleep " + m + "m" : "Sleep off";
+    };
+    document.getElementById("wakeBtn").onclick = async () => {
+      try {
+        if (wakeLock) { await wakeLock.release(); wakeLock = null; document.getElementById("wakeBtn").textContent = "Screen: normal"; return; }
+        wakeLock = await navigator.wakeLock.request("screen");
+        document.getElementById("wakeBtn").textContent = "Screen: stay on";
+      } catch {
+        msg("This browser blocked Stay Awake. Lock-screen controls still work.", "warn");
+      }
+    };
+    document.getElementById("driveBtn").onclick = () => {
+      window.open("https://drive.google.com/file/d/" + EPISODES[idx].id + "/view", "_blank");
+    };
+    document.getElementById("loadBtn").onclick = () => document.getElementById("fileInput").click();
+    document.getElementById("fileInput").onchange = e => ingestFiles(e.target.files);
+    seek.oninput = () => { if (audio.duration) audio.currentTime = (seek.value / 1000) * audio.duration; };
+    audio.addEventListener("play", () => { playBtn.textContent = "Pause"; playBtn.classList.remove("paused"); });
+    audio.addEventListener("pause", () => { playBtn.textContent = "Play"; playBtn.classList.add("paused"); });
+    audio.addEventListener("timeupdate", () => {
+      if (audio.duration) seek.value = Math.round((audio.currentTime / audio.duration) * 1000);
+      document.getElementById("cur").textContent = fmt(audio.currentTime);
+      document.getElementById("dur").textContent = fmt(audio.duration);
+      const pos = state().pos || {};
+      pos[EPISODES[idx].n] = audio.currentTime;
+      save({ pos, idx });
+      if (sleepUntil && Date.now() >= sleepUntil) { audio.pause(); sleepUntil = 0; sleepIdx = 0; document.getElementById("sleepBtn").textContent = "Sleep off"; }
+    });
+    audio.addEventListener("ended", () => load(idx + 1, true));
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+    const saved = state();
+    idx = Number.isInteger(saved.idx) ? saved.idx : 0;
+    probeLocal().then(() => load(idx, false));
+  </script>
 </body>
 </html>
