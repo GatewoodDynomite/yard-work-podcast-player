@@ -1,0 +1,8 @@
+{
+  "name": "Yard Queue",
+  "short_name": "Yard Queue",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b120c",
+  "theme_color": "#0b120c"
+}
