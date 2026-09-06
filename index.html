@@ -5,97 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b120c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Yard Queue" />
   <title>Yard Queue</title>
   <style>
-    :root {
-      --bg: #0b120c; --bg-2: #142016; --card: #1a2a1c; --card-2: #223426;
-      --ink: #f3f6ee; --muted: #b7c4b0; --line: #314636;
-      --amber: #f0b429; --amber-2: #ffd56a; --good: #8fd19e;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      margin: 0; padding: 0; background: var(--bg); color: var(--ink);
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    body {
-      padding: calc(12px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
-      max-width: 720px; margin: 0 auto;
-    }
-    h1 { font-size: 1.15rem; margin: 0; }
-    .sub { color: var(--muted); font-size: .92rem; margin-top: 4px; line-height: 1.35; }
-    header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .badge {
-      background: var(--card); border: 1px solid var(--line); color: var(--amber-2);
-      border-radius: 999px; padding: 8px 12px; font-size: .78rem; white-space: nowrap; height: fit-content;
-    }
-    .now {
-      background: linear-gradient(180deg, var(--card-2), var(--card));
-      border: 1px solid var(--line); border-radius: 22px; padding: 18px 16px 16px;
-      box-shadow: var(--shadow); margin-bottom: 14px;
-    }
-    .kicker { color: var(--amber); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-    .title { font-size: 1.35rem; line-height: 1.25; margin: 8px 0 14px; font-weight: 750; }
-    .times { display: flex; justify-content: space-between; color: var(--muted); font-variant-numeric: tabular-nums; font-size: .9rem; margin-top: 6px; }
-    input[type="range"] { width: 100%; height: 28px; accent-color: var(--amber); }
-    .controls { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 10px; margin: 14px 0 10px; }
-    button {
-      border: 0; border-radius: 18px; background: var(--card-2); color: var(--ink);
-      font-weight: 700; font-size: 1rem; min-height: 64px;
-      box-shadow: inset 0 0 0 1px var(--line);
-    }
-    button:active { transform: scale(.98); }
-    button.play {
-      background: var(--amber); color: #1a1403; font-size: 1.35rem; min-height: 84px;
-      box-shadow: 0 8px 24px rgba(240,180,41,.28);
-    }
-    .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .row button { min-height: 52px; font-size: .92rem; }
-    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-    .tools button { min-height: 56px; }
-    #rand { width: 100%; min-height: 64px; margin-top: 10px; background: #3a4f2a; }
-    #rand.on { background: var(--amber); color: #1a1403; }
-    .warn, .ok, .hint { border-radius: 14px; padding: 12px; margin: 0 0 12px; line-height: 1.45; font-size: .95rem; }
-    .warn { background: #3a2418; color: #ffd7c4; }
-    .ok { background: #1c3324; color: var(--good); }
-    .hint { background: var(--bg-2); color: var(--muted); }
-    .hint b, .warn b { color: var(--ink); }
-    .list { display: flex; flex-direction: column; gap: 8px; }
-    .ep {
-      text-align: left; padding: 14px; border-radius: 16px; background: var(--card);
-      display: grid; grid-template-columns: 54px 1fr auto; gap: 10px; align-items: center; min-height: 72px;
-    }
-    .ep.on { outline: 2px solid var(--amber); background: #2a3f28; }
-    .num {
-      width: 54px; height: 54px; border-radius: 14px; background: #243328;
-      display: grid; place-items: center; font-weight: 800; color: var(--amber-2);
-    }
-    .ep b { display: block; font-size: 1rem; line-height: 1.25; }
-    .ep small { color: var(--muted); }
-    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--good); }
-    .hidden { display: none; }
-    a { color: var(--amber-2); }
-    ol { margin: 8px 0 0; padding-left: 1.2rem; }
+    :root { --bg:#0b120c; --bg-2:#142016; --card:#1a2a1c; --card-2:#223426; --ink:#f3f6ee; --muted:#b7c4b0; --line:#314636; --amber:#f0b429; --amber-2:#ffd56a; --good:#8fd19e; --shadow:0 10px 30px rgba(0,0,0,.35); }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+    body { padding:calc(12px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom)); max-width:720px; margin:0 auto; }
+    h1 { font-size:1.15rem; margin:0; }
+    .sub { color:var(--muted); font-size:.92rem; margin-top:4px; line-height:1.35; }
+    header { display:flex; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .badge { background:var(--card); border:1px solid var(--line); color:var(--amber-2); border-radius:999px; padding:8px 12px; font-size:.78rem; white-space:nowrap; height:fit-content; }
+    .now { background:linear-gradient(180deg,var(--card-2),var(--card)); border:1px solid var(--line); border-radius:22px; padding:18px 16px 16px; box-shadow:var(--shadow); margin-bottom:14px; }
+    .kicker { color:var(--amber); font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .title { font-size:1.35rem; line-height:1.25; margin:8px 0 14px; font-weight:750; }
+    .times { display:flex; justify-content:space-between; color:var(--muted); font-variant-numeric:tabular-nums; font-size:.9rem; margin-top:6px; }
+    input[type=range] { width:100%; height:28px; accent-color:var(--amber); }
+    .controls { display:grid; grid-template-columns:1fr 1.15fr 1fr; gap:10px; margin:14px 0 10px; }
+    button { border:0; border-radius:18px; background:var(--card-2); color:var(--ink); font-weight:700; font-size:1rem; min-height:64px; box-shadow:inset 0 0 0 1px var(--line); }
+    button:active { transform:scale(.98); }
+    button.play { background:var(--amber); color:#1a1403; font-size:1.35rem; min-height:84px; box-shadow:0 8px 24px rgba(240,180,41,.28); }
+    .row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .row button { min-height:52px; font-size:.92rem; }
+    .tools { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+    .tools button { min-height:56px; }
+    #rand { width:100%; min-height:64px; margin-top:10px; background:#3a4f2a; }
+    #rand.on { background:var(--amber); color:#1a1403; }
+    .warn,.ok,.hint { border-radius:14px; padding:12px; margin:0 0 12px; line-height:1.45; font-size:.95rem; }
+    .warn { background:#3a2418; color:#ffd7c4; }
+    .ok { background:#1c3324; color:var(--good); }
+    .hint { background:var(--bg-2); color:var(--muted); }
+    .list { display:flex; flex-direction:column; gap:8px; }
+    .ep { text-align:left; padding:14px; border-radius:16px; background:var(--card); display:grid; grid-template-columns:54px 1fr auto; gap:10px; align-items:center; min-height:72px; }
+    .ep.on { outline:2px solid var(--amber); background:#2a3f28; }
+    .num { width:54px; height:54px; border-radius:14px; background:#243328; display:grid; place-items:center; font-weight:800; color:var(--amber-2); }
+    .ep b { display:block; font-size:1rem; line-height:1.25; }
+    .ep small { color:var(--muted); }
+    .status-dot { width:10px; height:10px; border-radius:50%; background:var(--good); }
+    .hidden { display:none; }
+    a { color:var(--amber-2); }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Yard Queue</h1>
-      <div class="sub">Streams from Google Drive · big buttons for yard work</div>
+      <div class="sub">Streams from Google Drive</div>
     </div>
     <div class="badge" id="sourceBadge">Drive stream</div>
   </header>
-  <div class="hint" id="howto">
-    One Drive setting unlocks streaming. Share the listening folder as Anyone with the link → Viewer, then tap Play.
-    <ol>
-      <li>Open the <a href="https://drive.google.com/drive/folders/1jZTLlOYFl6i9TUv94QUFil41rHdCbX4h">listening folder</a>.</li>
-      <li>Share → General access → <b>Anyone with the link</b> → Viewer.</li>
-      <li>Come back here and tap Play.</li>
-    </ol>
-  </div>
+  <div class="hint" id="howto">Folder is shared. Tap Play or Play random. Leave this tab open so it keeps going in your pocket.</div>
   <div id="msg"></div>
   <section class="now">
     <div class="kicker" id="kicker">Ready when you are</div>
@@ -122,175 +80,129 @@
     </div>
   </section>
   <div class="list" id="list"></div>
-  <audio id="audio" playsinline preload="metadata"></audio>
+  <audio id="audio" playsinline preload="metadata" referrerpolicy="no-referrer"></audio>
   <script>
-    const FOLDER = "https://drive.google.com/drive/folders/1jZTLlOYFl6i9TUv94QUFil41rHdCbX4h";
     const EPISODES = [
-      { n: "00", title: "Full Yard Work Queue", mins: "34 min", id: "1uRvWAny_eq--MZ1p7E1iHxfbGd3b2lYg" },
-      { n: "01", title: "Support Process Audit Briefing", mins: "part", id: "1z7CEvL_DXGDxgg5ibcLetM262cRmkN7G" },
-      { n: "02", title: "The Offer", mins: "part", id: "169nDNWfIijq43oQqTpM28cLRgGgRc8R5" },
-      { n: "03", title: "How to Compete", mins: "part", id: "197l-PbKBAwIvVKtRBMJhoqsJu9JMfEA-" },
-      { n: "04", title: "First 30 Days", mins: "part", id: "1PT0rxkcZMvslNekkXMlgDckdpb7hQpOq" },
-      { n: "05", title: "What the Report Contains", mins: "part", id: "1Uuk_dsCrukrsCBJDDKcQSN_xgV4UyOJK" },
-      { n: "06", title: "Safety, Growth, and Stop Rules", mins: "part", id: "1BC6fCAzrPjZDad0679zdLDGlPJXjvjn6" },
-      { n: "07", title: "Cross Timbers Sand and Stripped Topsoil", mins: "updated", id: "1cywO3v4tzq1I9Z5IQIxbCfZuf6ssEyui" },
-      { n: "08", title: "Proposal Language", mins: "part", id: "1IepQRYqy6PqaRfg8uTd5XirqOncXBlcM" },
-      { n: "09", title: "Common Objections", mins: "part", id: "1M8yi3s4WeE2r5wjrbRjkfOXas-cOk5vD" },
-      { n: "10", title: "Job Search vs Side Gig Boundary", mins: "part", id: "1PceEB1CDBuEQj6ZGq89zQMkgs1nOC-Rh" },
-      { n: "12", title: "What Is Burrowing Under the Grass", mins: "part", id: "1hBxR9-n3KxyG4lJ8a-O6OpdIFpL2D2kV" },
-      { n: "13", title: "Technical Support Certifications", mins: "part", id: "1JaAvdjnrtvrZc4hdL4t_uzYOdOjKQ3Qv" },
-      { n: "14", title: "Top Complaints from Support Managers", mins: "part", id: "1Ehsn9fxrtuAE8YKDTFd9ni5k2xFCNN96" },
-      { n: "15", title: "How Companies Implement CRM", mins: "part", id: "1jHG3Z5173qmena44cKMTlQwC0tFMcp_o" },
-      { n: "16", title: "How CSAT Is Gathered and Evaluated", mins: "part", id: "177QHrNbqvIdYUzxBfIyw5UWWygV-z_Sp" },
-      { n: "17", title: "Paid vs Free Technical Support Expectations", mins: "part", id: "1vCbtZ2Meezn4RS0Tt6XfxejX0LuyJPjP" },
-      { n: "18", title: "Post Oak Shade and Front Yard Split", mins: "part", id: "1_iGlELm65QQ6MfUi02LYpPqKvWVuN6Xr" },
-      { n: "19", title: "Heat Tools for Sand and Shade", mins: "part", id: "1LVnGSidoSX90KLPYDrqS7dSIHdblSs65" },
-      { n: "20", title: "Espalier Food and Spice on the North Fence", mins: "part", id: "13ssb9b1j8HSkHGjkLiLxuH5EAlW0Z36H" }
+      { n:"00", title:"Full Yard Work Queue", mins:"34 min", id:"1uRvWAny_eq--MZ1p7E1iHxfbGd3b2lYg" },
+      { n:"01", title:"Support Process Audit Briefing", mins:"part", id:"1z7CEvL_DXGDxgg5ibcLetM262cRmkN7G" },
+      { n:"02", title:"The Offer", mins:"part", id:"169nDNWfIijq43oQqTpM28cLRgGgRc8R5" },
+      { n:"03", title:"How to Compete", mins:"part", id:"197l-PbKBAwIvVKtRBMJhoqsJu9JMfEA-" },
+      { n:"04", title:"First 30 Days", mins:"part", id:"1PT0rxkcZMvslNekkXMlgDckdpb7hQpOq" },
+      { n:"05", title:"What the Report Contains", mins:"part", id:"1Uuk_dsCrukrsCBJDDKcQSN_xgV4UyOJK" },
+      { n:"06", title:"Safety, Growth, and Stop Rules", mins:"part", id:"1BC6fCAzrPjZDad0679zdLDGlPJXjvjn6" },
+      { n:"07", title:"Cross Timbers Sand and Stripped Topsoil", mins:"updated", id:"1cywO3v4tzq1I9Z5IQIxbCfZuf6ssEyui" },
+      { n:"08", title:"Proposal Language", mins:"part", id:"1IepQRYqy6PqaRfg8uTd5XirqOncXBlcM" },
+      { n:"09", title:"Common Objections", mins:"part", id:"1M8yi3s4WeE2r5wjrbRjkfOXas-cOk5vD" },
+      { n:"10", title:"Job Search vs Side Gig Boundary", mins:"part", id:"1PceEB1CDBuEQj6ZGq89zQMkgs1nOC-Rh" },
+      { n:"12", title:"What Is Burrowing Under the Grass", mins:"part", id:"1hBxR9-n3KxyG4lJ8a-O6OpdIFpL2D2kV" },
+      { n:"13", title:"Technical Support Certifications", mins:"part", id:"1JaAvdjnrtvrZc4hdL4t_uzYOdOjKQ3Qv" },
+      { n:"14", title:"Top Complaints from Support Managers", mins:"part", id:"1Ehsn9fxrtuAE8YKDTFd9ni5k2xFCNN96" },
+      { n:"15", title:"How Companies Implement CRM", mins:"part", id:"1jHG3Z5173qmena44cKMTlQwC0tFMcp_o" },
+      { n:"16", title:"How CSAT Is Gathered and Evaluated", mins:"part", id:"177QHrNbqvIdYUzxBfIyw5UWWygV-z_Sp" },
+      { n:"17", title:"Paid vs Free Technical Support Expectations", mins:"part", id:"1vCbtZ2Meezn4RS0Tt6XfxejX0LuyJPjP" },
+      { n:"18", title:"Post Oak Shade and Front Yard Split", mins:"part", id:"1_iGlELm65QQ6MfUi02LYpPqKvWVuN6Xr" },
+      { n:"19", title:"Heat Tools for Sand and Shade", mins:"part", id:"1LVnGSidoSX90KLPYDrqS7dSIHdblSs65" },
+      { n:"20", title:"Espalier Food and Spice on the North Fence", mins:"part", id:"13ssb9b1j8HSkHGjkLiLxuH5EAlW0Z36H" }
     ];
     const audio = document.getElementById("audio");
     const seek = document.getElementById("seek");
     const playBtn = document.getElementById("play");
-    const speeds = [1, 1.2, 1.5, 0.9];
-    const sleeps = [0, 10, 20, 30, 45];
-    let speedIdx = 0, sleepIdx = 0, sleepUntil = 0, idx = 0, urlIdx = 0, wakeLock = null, shuffle = false;
-    const SAVE = "yard-queue-v2";
-    function driveUrls(id) {
+    const speeds = [1,1.2,1.5,0.9];
+    const sleeps = [0,10,20,30,45];
+    let speedIdx=0, sleepIdx=0, sleepUntil=0, idx=0, urlIdx=0, wakeLock=null, shuffle=false;
+    const SAVE="yard-queue-v2";
+    function driveUrls(id){
       return [
-        "https://drive.usercontent.google.com/download?id=" + id + "&export=download&confirm=t",
-        "https://docs.google.com/uc?export=download&id=" + id + "&confirm=t",
-        "https://lh3.googleusercontent.com/d/" + id
+        "https://drive.usercontent.google.com/download?id="+id+"&export=download",
+        "https://drive.google.com/uc?export=download&id="+id,
+        "https://docs.google.com/uc?export=download&id="+id
       ];
     }
-    function fmt(t) {
-      if (!isFinite(t) || t < 0) return "0:00";
-      const m = Math.floor(t / 60), s = Math.floor(t % 60);
-      return m + ":" + String(s).padStart(2, "0");
-    }
-    function state() { try { return JSON.parse(localStorage.getItem(SAVE) || "{}"); } catch { return {}; } }
-    function save(partial) { localStorage.setItem(SAVE, JSON.stringify(Object.assign(state(), partial))); }
-    function msg(html, kind) {
-      const el = document.getElementById("msg");
-      if (!html) { el.innerHTML = ""; return; }
-      el.innerHTML = '<div class="' + (kind || "ok") + '">' + html + "</div>";
-    }
-    function shareHelp() {
-      msg('Stream blocked because the Drive folder is still private. Open the <a href="' + FOLDER + '">listening folder</a>, tap Share, set General access to <b>Anyone with the link</b> (Viewer), then tap Play again.', "warn");
-    }
-    function renderList() {
-      document.getElementById("list").innerHTML = EPISODES.map((ep, i) => {
-        const on = i === idx ? " on" : "";
-        return '<button class="ep' + on + '" data-i="' + i + '" type="button">' +
-          '<div class="num">' + ep.n + '</div>' +
-          '<div><b>' + ep.title + '</b><small>' + ep.mins + ' · Drive stream</small></div>' +
-          '<div class="status-dot"></div></button>';
+    function fmt(t){ if(!isFinite(t)||t<0) return "0:00"; const m=Math.floor(t/60), s=Math.floor(t%60); return m+":"+String(s).padStart(2,"0"); }
+    function state(){ try{ return JSON.parse(localStorage.getItem(SAVE)||"{}"); }catch{ return {}; } }
+    function save(p){ localStorage.setItem(SAVE, JSON.stringify(Object.assign(state(), p))); }
+    function msg(html,kind){ const el=document.getElementById("msg"); if(!html){ el.innerHTML=""; return; } el.innerHTML='<div class="'+(kind||"ok")+'">'+html+"</div>"; }
+    function shareHelp(){ msg("Could not start this file. Tap Play again, or use Open in Drive.","warn"); }
+    function renderList(){
+      document.getElementById("list").innerHTML = EPISODES.map((ep,i)=>{
+        return '<button class="ep'+(i===idx?" on":"")+'" data-i="'+i+'" type="button"><div class="num">'+ep.n+'</div><div><b>'+ep.title+'</b><small>'+ep.mins+'</small></div><div class="status-dot"></div></button>';
       }).join("");
     }
-    function mediaSession(ep) {
-      if (!("mediaSession" in navigator)) return;
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: ep.title, artist: "Yard Queue", album: "Support Process Audit · Sep 2026"
-      });
-      const skip = d => { audio.currentTime = Math.max(0, audio.currentTime + d); };
-      navigator.mediaSession.setActionHandler("play", () => audio.play());
-      navigator.mediaSession.setActionHandler("pause", () => audio.pause());
-      navigator.mediaSession.setActionHandler("previoustrack", () => load(idx - 1, true));
-      navigator.mediaSession.setActionHandler("nexttrack", () => load(idx + 1, true));
-      navigator.mediaSession.setActionHandler("seekbackward", () => skip(-15));
-      navigator.mediaSession.setActionHandler("seekforward", () => skip(15));
+    function mediaSession(ep){
+      if(!("mediaSession" in navigator)) return;
+      navigator.mediaSession.metadata = new MediaMetadata({ title:ep.title, artist:"Yard Queue", album:"Yard Work Queue" });
+      const skip=d=>{ audio.currentTime=Math.max(0, audio.currentTime+d); };
+      navigator.mediaSession.setActionHandler("play", ()=>audio.play());
+      navigator.mediaSession.setActionHandler("pause", ()=>audio.pause());
+      navigator.mediaSession.setActionHandler("previoustrack", ()=>load(idx-1,true));
+      navigator.mediaSession.setActionHandler("nexttrack", ()=>load(idx+1,true));
+      navigator.mediaSession.setActionHandler("seekbackward", ()=>skip(-15));
+      navigator.mediaSession.setActionHandler("seekforward", ()=>skip(15));
     }
-    function attach(autoplay) {
-      const ep = EPISODES[idx];
+    function attach(autoplay){
+      const ep=EPISODES[idx];
       audio.src = driveUrls(ep.id)[urlIdx];
       audio.playbackRate = speeds[speedIdx];
-      audio.onloadedmetadata = () => {
+      audio.onloadedmetadata = ()=>{
         document.getElementById("howto").classList.add("hidden");
-        document.getElementById("sourceBadge").textContent = "Streaming";
-        msg("Streaming from Drive. Leave this tab open so lock-screen controls keep working.");
-        const resume = (state().pos || {})[ep.n] || 0;
-        if (resume > 3 && resume < (audio.duration || 1e9) - 3) audio.currentTime = resume;
-        if (autoplay) audio.play().catch(shareHelp);
+        document.getElementById("sourceBadge").textContent="Streaming";
+        msg("Streaming from Drive. Leave this tab open.");
+        const resume=(state().pos||{})[ep.n]||0;
+        if(resume>3 && resume<(audio.duration||1e9)-3) audio.currentTime=resume;
+        if(autoplay) audio.play().catch(shareHelp);
       };
     }
-    function playRandom() {
-      let i = Math.floor(Math.random() * EPISODES.length);
-      if (EPISODES.length > 1) {
-        let guard = 0;
-        while (i === idx && guard < 8) { i = Math.floor(Math.random() * EPISODES.length); guard += 1; }
-      }
-      shuffle = true;
+    function playRandom(){
+      let i=Math.floor(Math.random()*EPISODES.length);
+      if(EPISODES.length>1){ let g=0; while(i===idx && g<8){ i=Math.floor(Math.random()*EPISODES.length); g++; } }
+      shuffle=true;
       document.getElementById("rand").classList.add("on");
-      document.getElementById("rand").textContent = "Random on";
-      load(i, true);
+      document.getElementById("rand").textContent="Random on";
+      load(i,true);
     }
-    function load(i, autoplay) {
-      idx = (i + EPISODES.length) % EPISODES.length;
-      urlIdx = 0;
-      const ep = EPISODES[idx];
-      document.getElementById("kicker").textContent = "Segment " + ep.n;
-      document.getElementById("nowTitle").textContent = ep.title;
-      renderList(); save({ idx }); mediaSession(ep); attach(autoplay);
+    function load(i,autoplay){
+      idx=(i+EPISODES.length)%EPISODES.length; urlIdx=0;
+      const ep=EPISODES[idx];
+      document.getElementById("kicker").textContent="Segment "+ep.n;
+      document.getElementById("nowTitle").textContent=ep.title;
+      renderList(); save({idx}); mediaSession(ep);
+      if(autoplay) attach(true);
     }
-    audio.addEventListener("error", () => {
-      const urls = driveUrls(EPISODES[idx].id);
-      if (urlIdx < urls.length - 1) { urlIdx += 1; attach(true); return; }
-      document.getElementById("sourceBadge").textContent = "Share folder";
+    audio.addEventListener("error", ()=>{
+      if(urlIdx < 2){ urlIdx++; attach(true); return; }
+      document.getElementById("sourceBadge").textContent="Retry play";
       shareHelp();
     });
-    document.getElementById("list").addEventListener("click", e => {
-      const btn = e.target.closest("[data-i]");
-      if (btn) load(+btn.dataset.i, true);
+    document.getElementById("list").addEventListener("click", e=>{
+      const btn=e.target.closest("[data-i]"); if(btn) load(+btn.dataset.i, true);
     });
-    playBtn.onclick = () => {
-      if (!audio.src) return load(idx, true);
-      if (audio.paused) audio.play().catch(shareHelp); else audio.pause();
+    playBtn.onclick = ()=>{
+      if(!audio.src || audio.error){ load(idx,true); return; }
+      if(audio.paused) audio.play().catch(shareHelp); else audio.pause();
     };
-    document.getElementById("prev").onclick = () => load(idx - 1, true);
-    document.getElementById("next").onclick = () => load(idx + 1, true);
-    document.getElementById("back15").onclick = () => audio.currentTime = Math.max(0, audio.currentTime - 15);
-    document.getElementById("fwd15").onclick = () => audio.currentTime += 15;
-    document.getElementById("back30").onclick = () => audio.currentTime = Math.max(0, audio.currentTime - 30);
-    document.getElementById("fwd30").onclick = () => audio.currentTime += 30;
+    document.getElementById("prev").onclick = ()=>load(idx-1,true);
+    document.getElementById("next").onclick = ()=>load(idx+1,true);
+    document.getElementById("back15").onclick = ()=>audio.currentTime=Math.max(0,audio.currentTime-15);
+    document.getElementById("fwd15").onclick = ()=>audio.currentTime+=15;
+    document.getElementById("back30").onclick = ()=>audio.currentTime=Math.max(0,audio.currentTime-30);
+    document.getElementById("fwd30").onclick = ()=>audio.currentTime+=30;
     document.getElementById("rand").onclick = playRandom;
-    document.getElementById("speedBtn").onclick = () => {
-      speedIdx = (speedIdx + 1) % speeds.length;
-      audio.playbackRate = speeds[speedIdx];
-      document.getElementById("speedBtn").textContent = "Speed " + speeds[speedIdx].toFixed(1) + "x";
-    };
-    document.getElementById("sleepBtn").onclick = () => {
-      sleepIdx = (sleepIdx + 1) % sleeps.length;
-      const m = sleeps[sleepIdx];
-      sleepUntil = m ? Date.now() + m * 60000 : 0;
-      document.getElementById("sleepBtn").textContent = m ? "Sleep " + m + "m" : "Sleep off";
-    };
-    document.getElementById("wakeBtn").onclick = async () => {
-      try {
-        if (wakeLock) { await wakeLock.release(); wakeLock = null; document.getElementById("wakeBtn").textContent = "Screen: normal"; return; }
-        wakeLock = await navigator.wakeLock.request("screen");
-        document.getElementById("wakeBtn").textContent = "Screen: stay on";
-      } catch { msg("Stay-awake was blocked. Lock-screen controls still work.", "warn"); }
-    };
-    document.getElementById("driveBtn").onclick = () => {
-      window.open("https://drive.google.com/file/d/" + EPISODES[idx].id + "/view", "_blank");
-    };
-    seek.oninput = () => { if (audio.duration) audio.currentTime = (seek.value / 1000) * audio.duration; };
-    audio.addEventListener("play", () => { playBtn.textContent = "Pause"; });
-    audio.addEventListener("pause", () => { playBtn.textContent = "Play"; });
-    audio.addEventListener("timeupdate", () => {
-      if (audio.duration) seek.value = Math.round((audio.currentTime / audio.duration) * 1000);
-      document.getElementById("cur").textContent = fmt(audio.currentTime);
-      document.getElementById("dur").textContent = fmt(audio.duration);
-      const pos = state().pos || {};
-      pos[EPISODES[idx].n] = audio.currentTime;
-      save({ pos, idx });
-      if (sleepUntil && Date.now() >= sleepUntil) {
-        audio.pause(); sleepUntil = 0; sleepIdx = 0;
-        document.getElementById("sleepBtn").textContent = "Sleep off";
-      }
+    document.getElementById("speedBtn").onclick = ()=>{ speedIdx=(speedIdx+1)%speeds.length; audio.playbackRate=speeds[speedIdx]; document.getElementById("speedBtn").textContent="Speed "+speeds[speedIdx].toFixed(1)+"x"; };
+    document.getElementById("sleepBtn").onclick = ()=>{ sleepIdx=(sleepIdx+1)%sleeps.length; const m=sleeps[sleepIdx]; sleepUntil=m?Date.now()+m*60000:0; document.getElementById("sleepBtn").textContent=m?"Sleep "+m+"m":"Sleep off"; };
+    document.getElementById("wakeBtn").onclick = async ()=>{ try{ if(wakeLock){ await wakeLock.release(); wakeLock=null; document.getElementById("wakeBtn").textContent="Screen: normal"; return;} wakeLock=await navigator.wakeLock.request("screen"); document.getElementById("wakeBtn").textContent="Screen: stay on"; }catch{ msg("Stay-awake blocked. Lock-screen controls still work.","warn"); } };
+    document.getElementById("driveBtn").onclick = ()=>window.open("https://drive.google.com/file/d/"+EPISODES[idx].id+"/view","_blank");
+    seek.oninput = ()=>{ if(audio.duration) audio.currentTime=(seek.value/1000)*audio.duration; };
+    audio.addEventListener("play", ()=>playBtn.textContent="Pause");
+    audio.addEventListener("pause", ()=>playBtn.textContent="Play");
+    audio.addEventListener("timeupdate", ()=>{
+      if(audio.duration) seek.value=Math.round((audio.currentTime/audio.duration)*1000);
+      document.getElementById("cur").textContent=fmt(audio.currentTime);
+      document.getElementById("dur").textContent=fmt(audio.duration);
+      const pos=state().pos||{}; pos[EPISODES[idx].n]=audio.currentTime; save({pos,idx});
+      if(sleepUntil && Date.now()>=sleepUntil){ audio.pause(); sleepUntil=0; sleepIdx=0; document.getElementById("sleepBtn").textContent="Sleep off"; }
     });
-    audio.addEventListener("ended", () => { if (shuffle) playRandom(); else load(idx + 1, true); });
-    const saved = state();
-    idx = Number.isInteger(saved.idx) ? saved.idx : 0;
-    load(idx, false);
+    audio.addEventListener("ended", ()=>{ if(shuffle) playRandom(); else load(idx+1,true); });
+    const saved=state(); idx=Number.isInteger(saved.idx)?saved.idx:0; load(idx,false);
   </script>
 </body>
 </html>
